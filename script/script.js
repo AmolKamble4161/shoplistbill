@@ -265,9 +265,7 @@ els.themeToggle.addEventListener("click", () => {
 // QR to current page (Google Chart API)
 function setQr() {
   const url = location.href;
-  const src = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${encodeURIComponent(
-    url
-  )}`;
+  const src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
   els.qrImg.src = src;
 }
 
@@ -280,4 +278,5 @@ function init() {
   setQr();
 }
 init();
+
 
