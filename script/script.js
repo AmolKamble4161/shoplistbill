@@ -34,22 +34,20 @@ const areSameDimension = (u1, u2) => {
   return dim(u1) === dim(u2);
 };
 
-const formatQty = (qtyMain, unitMain, qtySub, unitSub) => {
+const formatQty = (qtyMain, unitMain) => {
   let parts = [];
   if (qtyMain && qtyMain > 0)
     parts.push(
       `${stripTrailingZeros(qtyMain)} ${labelUnit(unitMain, qtyMain)}`
     );
-  if (qtySub && qtySub > 0 && unitSub !== "none")
-    parts.push(`${stripTrailingZeros(qtySub)} ${labelUnit(unitSub, qtySub)}`);
-  return parts.join(" + ");
+  return parts;
 };
 
 const labelUnit = (u, q = 1) => ({
   kg: q == 1 ? "Kg" : "Kg",
   g: "Gram",
   l: q == 1 ? "Liter" : "Liter",
-  ml: "MilliLiter",
+  ml: "ML",
   unit: q == 1 ? "Unit" : "Units",
 }[u] || "");
 
@@ -65,18 +63,20 @@ const els = {
   itemName: document.getElementById("itemName"),
   qtyMain: document.getElementById("qtyMain"),
   unitMain: document.getElementById("unitMain"),
-  qtySub: document.getElementById("qtySub"),
-  unitSub: document.getElementById("unitSub"),
   priceAmount: document.getElementById("priceAmount"),
   priceBasisQty: document.getElementById("priceBasisQty"),
   priceBasisUnit: document.getElementById("priceBasisUnit"),
   itemsBody: document.getElementById("itemsBody"),
+  clearBtn : document.getElementById("clearBtn"),
   billSummary: document.getElementById("billSummary"),
   billDate: document.getElementById("billDate"),
   resetAll: document.getElementById("resetAll"),
+  clearData : document.getElementById("clearData"),
+  whatappBtn : document.getElementById("whatappBtn"),
   printBill: document.getElementById("printBill"),
   themeToggle: document.getElementById("themeToggle"),
-  qrImg: document.getElementById("qrImg"),
+  hamburgerBtn : document.getElementById("hamburgerBtn"),
+  headerActions : document.getElementById("headerActions"),
 };
 
 // ---------- Load / Save ----------
@@ -105,12 +105,11 @@ function loadTheme() {
 
 // ---------- Add / Edit ----------
 function handleSubmit(e) {
+  console.log(e);
   e.preventDefault();
   const name = (els.itemName.value || "").trim();
   const qtyMain = parseFloat(els.qtyMain.value) || 0;
   const untMain = els.unitMain.value;
-  const qtySub = parseFloat(els.qtySub.value) || 0;
-  const unitSub = els.unitSub.value;
   const price = parseFloat(els.priceAmount.value) || 0;
   const pbQty = parseFloat(els.priceBasisQty.value) || 1;
   const pbUnit = els.priceBasisUnit.value;
@@ -123,7 +122,7 @@ function handleSubmit(e) {
     alert("Enter a valid price");
     return;
   }
-  if (qtyMain <= 0 && !(qtySub > 0)) {
+  if (qtyMain <= 0 || pbQty <= 0) {
     alert("Enter quantity");
     return;
   }
@@ -134,19 +133,15 @@ function handleSubmit(e) {
 
   // Convert quantities to base of the chosen dimension
   const mainBase = unitToBase(qtyMain, untMain);
-  const subBase = unitSub === "none" ? 0 : unitToBase(qtySub, unitSub);
-  const totalBaseQty = mainBase + subBase; // base: kg/l/unit
 
   const basisBaseQty = unitToBase(pbQty, pbUnit);
   const pricePerBase = price / (basisBaseQty || 1); // ₹ per kg/l/unit
-  const total = pricePerBase * totalBaseQty;
+  const total = pricePerBase * mainBase;
 
   const item = {
     name,
     qtyMain: qtyMain,
     unitMain: untMain,
-    qtySub: qtySub,
-    unitSub: unitSub,
     priceAmount: price,
     priceBasisQty: pbQty,
     priceBasisUnit: pbUnit,
@@ -167,7 +162,17 @@ function handleSubmit(e) {
   els.unitMain.value = "unit";
   els.priceBasisQty.value = 1;
   els.priceBasisUnit.value = "unit";
-  els.unitSub.value = "none";
+  els.itemName.focus();
+}
+
+// function clear to clear input field
+function clearInput(){
+  const itemForm = document.getElementById("itemForm");
+
+  itemForm.reset();
+  els.unitMain.value = "unit";
+  els.priceBasisQty.value = 1;
+  els.priceBasisUnit.value = "unit";
 }
 
 // ---------- Render ----------
@@ -180,7 +185,7 @@ function render() {
     tr.innerHTML = `
           <td>${idx + 1}</td>
           <td>${escapeHtml(it.name)}</td>
-          <td>${formatQty(it.qtyMain, it.unitMain, it.qtySub, it.unitSub)}</td>
+          <td>${formatQty(it.qtyMain, it.unitMain)}</td>
           <td>${currency(it.priceAmount)} / ${stripTrailingZeros(it.priceBasisQty)} ${labelUnit(it.priceBasisUnit, it.priceBasisQty)}</td>
           <td>${currency(it.total)}</td>
           <td>
@@ -208,7 +213,8 @@ function escapeHtml(s) {
 }
 
 // ---------- Actions ----------
-document.getElementById("itemForm").addEventListener("submit", handleSubmit); 
+document.getElementById("itemForm").addEventListener("submit", handleSubmit);
+
 
 els.itemsBody.addEventListener("click", (e) => {
   const btn = e.target.closest("button");
@@ -227,23 +233,71 @@ els.itemsBody.addEventListener("click", (e) => {
     els.itemName.value = it.name;
     els.qtyMain.value = it.qtyMain;
     els.unitMain.value = it.unitMain;
-    els.qtySub.value = it.qtySub;
-    els.unitSub.value = it.unitSub;
     els.priceAmount.value = it.priceAmount;
     els.priceBasisQty.value = it.priceBasisQty;
     els.priceBasisUnit.value = it.priceBasisUnit;
     state.editingIndex = idx;
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    const tbodyBtn = els.itemsBody.querySelectorAll(".icon-btn");
+    tbodyBtn.forEach(tbtn => {
+      if(tbtn !== btn)
+      tbtn.disabled = true;
+    });
   }
 });
 
-// Reset all
-els.resetAll.addEventListener("click", () => {
+// Reset all / clear all data
+function resetAllData() {
   if (confirm("Clear the entire list?")) {
     state.items = [];
     save();
     render();
   }
+}
+
+
+els.clearBtn.addEventListener("click", clearInput); // clear input fild
+els.resetAll.addEventListener("click", resetAllData); // Reset all data
+els.clearData.addEventListener("click", resetAllData); // Clear all data
+
+ // send bill via whatsapp
+els.whatappBtn.addEventListener("click", () => {
+  const mobileInput = document.getElementById("mobile-number");
+  const mobile = mobileInput.value.trim();
+
+  if(!/^\d{10}$/.test(mobile)){
+    alert("Enter valid mobile no.!");
+    return;
+  }
+
+  const fullNumber = `91${mobile}`;
+
+  const now = new Date();
+  const date = now.toLocaleDateString("en-GB"); // DD/MM/YYYY
+  const time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true});
+  
+  let message = "```" // start monospace block for whatsApp
+  message += `ShopListBill\nDate: ${date}\nTime: ${time}\n\n`;
+  message += `No   Item        Qty    Price\n`;
+
+  let sum = 0;
+
+  state.items.forEach((item, idx) => {
+    sum += Number(item.total);
+    const no = String(idx + 1).padStart(2, "0");
+    const name = item.name.slice(0, 10).padEnd(10, " ");
+    const qty = `${item.qtyMain}`.padStart(4, " ");
+    const unt = `${item.unitMain}`.slice(0, 2).padEnd(2, " ");
+    const price = `${currency(item.total)}`.padStart(8, " ");
+    message += `${no} ${name} ${qty} ${unt} ${price}\n`;
+  });
+
+  message += `\nTotal: ${currency(sum)}\n`;
+  message += "```";
+
+  const url = `https://wa.me/${fullNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
 });
 
 // Print clean bill
@@ -262,12 +316,27 @@ els.themeToggle.addEventListener("click", () => {
   saveTheme();
 });
 
-// QR to current page (Google Chart API)
-function setQr() {
-  const url = location.href;
-  const src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
-  els.qrImg.src = src;
-}
+// Mobile view hamburger 
+els.hamburgerBtn.addEventListener("click", () => {
+  els.headerActions.classList.toggle("show");
+});
+
+// Toggle examples section
+document.getElementById("examplesSection").addEventListener("click", () => {
+  const content = document.getElementById("examplesContent");
+  const icon = document.getElementById("toggleIcon");
+  
+  content.classList.toggle("show");
+  
+  if (content.classList.contains("show")) {
+    icon.classList.remove("fa-chevron-down");
+    icon.classList.add("fa-chevron-up");
+  } else {
+    icon.classList.remove("fa-chevron-up");
+    icon.classList.add("fa-chevron-down");
+  }
+});
+
 
 // On load
 function init() {
@@ -275,8 +344,5 @@ function init() {
   loadTheme();
   load();
   render();
-  setQr();
 }
 init();
-
-

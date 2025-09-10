@@ -1,3 +1,6 @@
+/* =========================
+   1. Root Variables & Theme
+   ========================= */
 :root {
     --bg: #0f172a; /* slate-900 */
     --card: #111827cc; /* gray-900 (glass) */
@@ -20,6 +23,9 @@
     --shadow: 0 8px 20px rgba(2, 6, 23, .08);
 }
 
+/* =========================
+   2. Base & Utility Styles
+   ========================= */
 * {
     box-sizing: border-box
 }
@@ -32,9 +38,11 @@ body {
 body {
     margin: 0;
     font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    background: radial-gradient(1200px 800px at 10% -10%, rgba(124, 58, 237, .25), transparent 60%),
-        radial-gradient(900px 700px at 110% 10%, rgba(6, 182, 212, .18), transparent 60%)
-        var(--bg);
+    background: radial-gradient(80vw 80vh at 0.5% 0.5%, rgba(124, 58, 237, .5), transparent 60%),
+                radial-gradient(80vw 80vh at 110% 10%, rgba(6, 182, 212, .5), transparent 60%),
+                var(--bg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: var(--text);
     transition: 0.3s linear;
 }
@@ -49,7 +57,9 @@ a {
     padding: clamp(16px, 3vw, 28px);
 }
 
-/* Header */
+/* =========================
+   3. Header & Navigation
+   ========================= */
 .header {
     display: flex;
     align-items: center;
@@ -63,11 +73,11 @@ a {
     box-shadow: var(--shadow);
 }
 
-/* .brand {
+.brand {
     display: flex;
     align-items: center;
     gap: 12px
-} */
+}
 
 .logo {
     width: 44px;
@@ -91,12 +101,39 @@ a {
     color: var(--text);    
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px
+/* Hamburger hidden on desktop */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--text);
+    cursor: pointer;
 }
 
+/* --- Mobile View --- */
+@media (max-width: 600px) {
+  .header-actions {
+    display: none; /* hide normal buttons */
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--bg);
+    border-radius: 12px;
+  }
+
+  .hamburger {
+    display: block; /* show hamburger */
+  }
+
+  .show {
+        display: block;
+    }
+}
+
+/* =========================
+   4. Buttons & Toggles
+   ========================= */
 i {
     color: var(--text);
 }
@@ -125,23 +162,20 @@ i {
     border: 1px solid var(--border);
     background: transparent;
     cursor: pointer;
-    /* display: grid; */
-    /* place-items: center */
 }
 
-/* Tagline */
+/* =========================
+   5. Tagline
+   ========================= */
 .tagline {
     margin: 18px 0 16px;
     color: var(--muted);
     text-align: center;
 }
 
-
-/* .tagline strong {
-    color: var(--muted)
-} */
-
-/* Input row */
+/* =========================
+   6. Card & Input Row
+   ========================= */
 .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -152,15 +186,15 @@ i {
 
 .input-row {
     display: grid;
-    gap: 10px;
-    grid-template-columns: 1.4fr .9fr .9fr .9fr 1fr auto;
-    align-items: end
+    grid-template-columns: 1fr 1fr 1fr 1fr 1.7fr;
+    align-items: end;
+    gap: 8px;
 }
 
 .field {
     display: flex;
     flex-direction: column;
-    gap: 6px
+    gap: 8px
 }
 
 .field label {
@@ -169,7 +203,8 @@ i {
 }
 
 .field input,
-.field select {
+.field select,
+.inputNo {
     width: 100%;
     padding: 12px 12px;
     border-radius: 12px;
@@ -183,28 +218,29 @@ i {
     color: var(--text);
 }
 
-.subqty {
-    display: grid;
-    grid-template-columns: .8fr .8fr;
-    gap: 10px;
-    align-items: end;
-}
-.priceBasis {
+.priceBasis,
+.gtyMainGrid {
     display: grid; 
-    grid-template-columns: 1fr 0.9fr; 
+    grid-template-columns: 1fr 1fr; 
     gap: 8px;
 }
 
 .primary-actions {
     display: flex;
-    gap: 10px
+    gap: 8px
 }
 
 .primary-actions .btn {
-    font-weight: 600
+    font-weight: 600;
+    width: 100%;
+    padding: 12px;
+    display: block;
+    background: rgba(32, 49, 118, 0.25);
 }
 
-/* Table */
+/* =========================
+   7. Table Styles
+   ========================= */
 .table-wrap {
     margin-top: 14px
 }
@@ -215,12 +251,16 @@ table {
     border-spacing: 0;
     overflow: hidden;
     border-radius: 16px;
-    border: 1px solid var(--border)
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+thead {
+    position: sticky;
+    top: 0;
 }
 
 thead th {
-    position: sticky;
-    top: 0;
     background: rgba(32, 49, 118, 0.35);
     backdrop-filter: blur(6px);
     font-weight: 600;
@@ -239,8 +279,6 @@ tbody tr:hover {
     background: rgba(124, 58, 237, .08)
 }
 
-
-
 .actions {
     display: flex;
     gap: 8px
@@ -254,11 +292,18 @@ tbody tr:hover {
     cursor: pointer
 }
 
+.icon-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .icon-btn:hover {
     background: rgba(255, 255, 255, .06)
 }
 
-/* Summary + QR */
+/* =========================
+   8. Summary & QR Section
+   ========================= */
 .summary {
     display: grid;
     gap: 12px;
@@ -270,14 +315,15 @@ tbody tr:hover {
 .summary .grid {
     display: grid;
     gap: 12px;
-    grid-template-columns: 1.2fr .8fr
+    grid-template-columns: 1.4fr .6fr;
 }
 
 .bill {
     padding: 14px;
     border-radius: 16px;
     border: 1px solid var(--border);
-    background: var(--card)
+    background: var(--card);
+    box-shadow: var(--shadow);
 }
 .bill .billNameDate {
     display: flex;
@@ -295,17 +341,60 @@ tbody tr:hover {
     font-size: 0.9rem; 
     color: var(--muted);
 }
+
+.combine {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 8px;
+}
+
+.inputNo {
+    grid-row: 1;
+    grid-area: 1 / span 2;
+}
+
+.amutLinkBtn {
+    display: grid;
+    grid-template-columns: 1fr 0.7fr;
+    gap: 15px;
+    margin-top: 7px;
+}
+
+.amutLinkBtn .btn {
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+}
+
 #billSummary {
-    font-size: 1.05rem; 
+    font-size: 1.2rem; 
     font-weight: 600;
 }
 
+.printMsg {
+    border : 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 0.9rem;
+    display: grid;
+}
+
+.printMsg ul {padding-left: 20px; margin: auto;}
+.printMsg ul li { 
+    list-style-type: none;
+    padding-left: 0.5rem;
+}
+
+.printMsg ul li::marker {
+  content: "📱"; /* Use any emoji or symbol here */
+}
 
 .qr {
     padding: 14px;
     border-radius: 16px;
     border: 1px solid var(--border);
     background: var(--card);
+    box-shadow: var(--shadow);
     display: flex;
     align-items: center;
     justify-content: center
@@ -316,14 +405,17 @@ tbody tr:hover {
     height: 160px
 }
 
-/* Helper/Info */
+/* =========================
+   9. Helper/Info Section
+   ========================= */
 .info {
     margin-top: 16px;
     padding: 14px;
     border: 1px solid var(--border);
     border-radius: 16px;
     background: var(--card);
-    color: var(--muted)
+    color: var(--muted);
+    box-shadow: var(--shadow);
 }
 
 .info ol{
@@ -340,21 +432,47 @@ tbody tr:hover {
 .footer {
     margin: 20px 0 10px;
     text-align: center;
-    color: var(--muted)
+    color: var(--muted);
 }
 
-/* Responsive */
+/* For collapsible examples section */
+#examplesSection h3 {
+  cursor: pointer;
+  user-select: none;
+}
+
+#examplesContent {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+  pointer-events: none;
+}
+
+#examplesContent.show {
+  max-height: 500px; /* adjust depending on content size */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+
+/* =========================
+   10. Responsive Styles
+   ========================= */
 @media (max-width: 900px) {
     .input-row {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    .subqty {
-        grid-template-columns: 1fr 1fr
+        grid-template-columns: 1fr 1fr;
     }
 
     .primary-actions {
-        grid-column: 1 / -1
+        grid-row: 3;
+        grid-column: 1 / span 2;
+        margin-top: 0.2rem;
+    }
+
+    .amutLinkBtn {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -373,38 +491,49 @@ tbody tr:hover {
         font-size: 1.05rem
     }
 
-    .input-row {
-        grid-template-columns: 1fr 1fr;
+    .primary-actions {
+        grid-row: 5;
+        grid-column: 1 / span 1;
     }
 
-    .summary .grid {
+    .inputNo {grid-area: 1/1;}
+
+    .summary .grid,
+    .input-row,
+    .combine {
         grid-template-columns: 1fr
     }
 }
 
-
-
-
+/* =========================
+   11. Print Styles
+   ========================= */
 @media print {
     body {
         background: white;
+        color: #0f172a;
     }
 
-    p.tagline:nth-of-type(2),
     .info,
     .toggle,
     #resetAll,
-    .card {
+    .card,
+    .combine {
         display: none !important
+    }
+
+    .printMsg {
+        position: relative;
+        top: 50%;        
     }
 
     tbody tr td:nth-child(5) {
         text-align: right;
     }
 
-    .qr {border: none;}
-    .table-wrap,
-    .summary {
+    .table,
+    .bill,
+    .qr {
         box-shadow: none;
         background: white;
     }
@@ -415,10 +544,12 @@ tbody tr:hover {
 
     thead th {
         background: #f1f5f9;
-        color: #0f172a
+        color: #0f172a;
+        border-bottom: 1px solid var(--border);
     }
 
-    .bill {
-        border: 0
+    thead tr th:nth-child(6),
+    tbody tr td:nth-child(6) {
+        display: none;
     }
 }
