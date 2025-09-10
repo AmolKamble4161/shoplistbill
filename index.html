@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ShopListBill - Paperless Shopping List & Bill</title>
 
-    <!-- Fonts -->
+    <!-- =========   Fonts & Icons   ========= -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap"/>
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body data-theme="dark">
     <div class="container" id="app">
-      <!-- Header -->
+
+      <!-- =========   1. Header & Navigation   ========= -->
       <header class="header">
         <div class="brand">
           <div class="logo">SLB</div>
@@ -25,7 +23,11 @@
         <div class="title">
           <div>ShopListBill</div>
         </div>
-        <div class="header-actions">
+        <!-- Hamburger (Mobile) -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="header-actions" id="headerActions">
           <button class="toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
             <i class="fa-solid fa-sun"></i>
           </button>
@@ -38,16 +40,12 @@
         </div>
       </header>
 
-      <!-- Taglines -->
+      <!-- =========   2. Tagline   ========= -->
       <p class="tagline">
-        <strong>Create shopping list with tally</strong> - Generate paperless
-        bill.
-      </p>
-      <p class="tagline">
-        No app to install, just visit website and create your list.
+        <strong>Create shopping list with tally</strong> - no app to install, simply scan the QR to visit.
       </p>
 
-      <!-- Input Row -->
+      <!-- =========   3. Input Row / Add Item Form   ========= -->
       <section class="card">
         <form id="itemForm">
           <div class="input-row">
@@ -55,50 +53,20 @@
               <label>Item name</label>
               <input required id="itemName" placeholder="e.g., Sugar" autocapitalize="words" />
             </div>
-
             <div class="field">
-              <label>Qty (main)</label>
-              <input
-                id="qtyMain"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="e.g., 1 or 2.5"
-              />
-            </div>
-
-            <div class="field">
-              <label>Unit</label>
-              <select id="unitMain">
-                <option value="unit">Unit</option>
-                <option value="kg">Kg</option>
-                <option value="g">Gram</option>
-                <option value="l">Liter</option>
-                <option value="ml">MilliLiter</option>
-              </select>
-            </div>
-
-            <div class="field subqty">
-              <div>
-                <label>+ Qty (optional)</label>
-                <input
-                  id="qtySub"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="e.g., 500"
-                />
-              </div>
-              <div>
-                <label>Sub‑Unit</label>
-                <select id="unitSub">
-                  <option value="none">—</option>
+              <div class="gtyMainGrid">
+                <label>Quantity</label>
+                <label>Unit</label>
+                <input id="qtyMain" type="number" step="0.01" min="0" placeholder="e.g., 1 or 2.5"/>
+                <select id="unitMain">
+                  <option value="unit">Unit</option>
+                  <option value="kg">Kg</option>
                   <option value="g">Gram</option>
+                  <option value="l">Liter</option>
                   <option value="ml">MilliLiter</option>
                 </select>
               </div>
             </div>
-
             <div class="field">
               <label>Price</label>
               <input
@@ -109,9 +77,8 @@
                 placeholder="e.g., 45"
               />
             </div>
-
             <div class="field">
-              <label>Price basis</label>
+              <label>Price per basis</label>
               <div class="priceBasis">
                 <input
                   id="priceBasisQty"
@@ -129,17 +96,19 @@
                 </select>
               </div>
             </div>
-
             <div class="primary-actions">
               <button type="submit" class="btn" id="addItem">
                 <i class="fa-solid fa-plus"></i> Save Item
+              </button>
+              <button type="button" class="btn" id="clearBtn">
+                <i class="fa-solid fa-xmark"></i> Clear
               </button>
             </div>
           </div>
         </form>
       </section>
 
-      <!-- Table -->
+      <!-- =========   4. Items Table   ========= -->
       <section class="table-wrap">
         <table id="itemsTable">
           <thead>
@@ -156,7 +125,7 @@
         </table>
       </section>
 
-      <!-- Summary + QR -->
+      <!-- =========   5. Summary & QR Section   ========= -->
       <section class="summary">
         <div class="grid">
           <div class="bill" id="billBox">
@@ -165,48 +134,84 @@
               <div id="billDate"></div>
             </div>
             <div id="billSummary">Total: ₹0.00</div>
+            <div class="amutLinkBtn">
+              <div class="combine"> 
+                  <input type="text" id="mobile-number" placeholder="Enter 10-digit mobile number" maxlength="10" class="inputNo"/>
+                  <button class="btn" id="clearData" type="button">
+                    <i class="fa-solid fa-trash"></i> Clear list
+                  </button>
+                  <button class="btn" id="whatappBtn" type="button">
+                    <i class="fa-brands fa-whatsapp"></i> Send to whatsapp
+                  </button>
+              </div>
+              <div class="printMsg">
+                <ul>
+                  <li>Scan the QR → Visit the site & create your own shopping list.</li>
+                </ul>
+              </div>
+            </div>
           </div>
           <div class="qr">
-            <img id="qrImg" alt="QR to this page">
+            <img id="qrImg" src="./images/shoplistbill-qr-1.png" alt="QR to this page">
           </div>
         </div>
       </section>
 
-      <!-- Info / How to use -->
+      <!-- =========   6. Info / How to Use   ========= -->
       <section class="info">
-        <h3><i class="fa-regular fa-circle-question"></i> How to use</h3>
+        <h3><i class="fa-regular fa-circle-question"></i> How to Use</h3>
         <ol>
-          <li>
-            Enter <strong>Item</strong>, choose <strong>Qty & Unit</strong>.
-            Optionally add a <strong>Sub‑Qty</strong> (e.g., 500 g).
-          </li>
-          <li>
-            Set <strong>Price</strong> and its <strong>basis</strong> (e.g., ₹40
-            per 1 kg, or ₹10 per 500 g).
-          </li>
-          <li>
-            Click <strong>Save Item</strong>. Totals update instantly. Use
-            <i class="fa-solid fa-pen"></i> to edit or
-            <i class="fa-solid fa-trash"></i> to delete.
-          </li>
-          <li>
-            Data is saved automatically in your browser (<strong
-              >Local Storage</strong
-            >).
-          </li>
-          <li>
-            Tap <strong>Print</strong> for a clean bill view.
-            <strong>Scan QR</strong> to open this page on mobile.
-          </li>
+          <li>Enter the <strong>Item Name</strong> and select <strong>Quantity & Unit</strong>.</li>
+          <li>Set the <strong>Price</strong> per unit or portion.</li>
+          <li>Click <strong>Save Item</strong> – the total price will update instantly. Use <i class="fa-solid fa-pen"></i> to edit or <i class="fa-solid fa-trash"></i> to delete items.</li>
+          <li>Enter your <strong>Mobile Number</strong> to get or send the bill instantly via WhatsApp or download it as a PDF.</li>
+          <li>Tap <strong>Print</strong> for a clean bill view. <i class="fa-solid fa-qrcode"></i> Scan the QR code to revisit this app anytime.</li>
+          <li>The app will calculate the total cost automatically based on the quantity and price you enter.</li>
+          <li>Whether you know the price per unit or for a bulk amount, you can easily input your data and the app will handle the calculations for you.</li>
         </ol>
       </section>
 
+      <!-- ========= Handling Different Units & Quantities (Collapsible) ========= -->
+      <section class="info" id="examplesSection">
+        <h3>
+          <i class="fa-solid fa-calculator"></i> Handling Different Units & Quantities
+          <i id="toggleIcon" class="fa-solid fa-chevron-down" style="float: right;"></i>
+        </h3>
+        <div id="examplesContent">
+          <p>
+            Some items are sold in bulk or by portion sizes. If you don't know the price per unit, you can easily calculate your total by entering the price for any quantity.
+          </p>
+          <ul>
+            <li><i class="fa-solid fa-layer-group"></i> Example: ₹100 per dozen → enter the price for 12 units</li>
+            <li><i class="fa-solid fa-weight-scale"></i> Example: ₹10 for 3 units → enter the price for 3 units</li>
+            <li><i class="fa-solid fa-droplet"></i> Example: ₹50 for 500 g → enter the price for 500 grams</li>
+          </ul>
+          <p>
+            Whether you're buying in bulk or smaller portions, this feature helps you quickly calculate the total cost without manual math.
+          </p>
+        </div>
+      </section>
+
+
+      <!-- ========= Privacy Policy ========= -->
+      <section class="info">
+        <h3><i class="fa-solid fa-shield-halved"></i> Privacy Policy</h3>
+        <p>
+          ShopListBill respects your privacy. All data is stored locally in your browser and is not shared with any third parties. We do not collect or store any personal information.
+        </p>
+        <p>
+          For more details, please visit our <a href="privacy.html" target="_blank">Privacy Policy</a> page.
+        </p>
+      </section>
+
+
+      <!-- =========   7. Footer   ========= -->
       <p class="footer">
-        © <span id="year"></span> ShopListBill • Built with ❤️ for paperless
-        shopping
+        © <span id="year"></span> ShopListBill • Built with ❤️ for paperless shopping
       </p>
     </div>
 
+    <!-- =========   8. Scripts   ========= -->
     <script src="./script/script.js"></script>
   </body>
 </html>
