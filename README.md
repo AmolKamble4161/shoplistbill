@@ -26,10 +26,10 @@ Experience the app in action here:
 
 ## 📸 Screenshots
 
-![ShopListBill Interface](https://amolkamble4161.github.io/shoplistbill/images/screenshot1.png)  
+![ShopListBill Interface](https://amolkamble4161.github.io/shoplistbill/images/screenshot_shoplistbill_.png)  
 *Example of the shopping list interface.*
 
-![Generated Bill](https://amolkamble4161.github.io/shoplistbill/images/screenshot2.png)  
+![Generated Bill](https://amolkamble4161.github.io/shoplistbill/images/Screenshot_bill.png)  
 *Sample of the generated bill.*
 
 ---
