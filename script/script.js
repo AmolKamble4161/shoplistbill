@@ -276,6 +276,8 @@ els.whatappBtn.addEventListener("click", () => {
   const now = new Date();
   const date = now.toLocaleDateString("en-GB"); // DD/MM/YYYY
   const time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true});
+
+  const appUrl = `https://amolkamble4161.github.io/shoplistbill/`;
   
   let message = "```" // start monospace block for whatsApp
   message += `ShopListBill\nDate: ${date}\nTime: ${time}\n\n`;
@@ -295,6 +297,7 @@ els.whatappBtn.addEventListener("click", () => {
 
   message += `\nTotal: ${currency(sum)}\n`;
   message += "```";
+  message += `\nVisit the app: ${appUrl}\n`;
 
   const url = `https://wa.me/${fullNumber}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
